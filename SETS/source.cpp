@@ -30,15 +30,17 @@ int main() {
 	//	++itr;
 
 	//}
-	auto eras = s.erase(added3.first);
-	std::cout << "meow "<< *eras<<std::endl;
-	auto  itr= s.begin();
-	while (itr != s.end())
-	{
-		std::cout << " val " << *itr;
-		++itr;
+	//auto eras = s.erase(added3.first);
+	//std::cout << "meow "<< *eras<<std::endl;
+	//auto  itr= s.begin();
+	//while (itr != s.end())
+	//{
+	//	std::cout << " val " << *itr;
+	//	++itr;
 
-	}
+	//}
+	s.clear();
+	std::cout << " size: " << s.size();
 
 	return 0;
 }
