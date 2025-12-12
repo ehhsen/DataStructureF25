@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include"tnode.h"
 
 template <typename key_type>
@@ -33,6 +32,19 @@ private:
 	}//end of successor function
 
 
+	//recursive clear function
+	void clear_r(tnode<key_type>* ptr) {
+		if (ptr == H) { 
+			return;
+		}
+		else {
+			clear_r(ptr->left);
+			clear_r(ptr->right);
+			delete ptr;
+		}
+	}
+
+
 
 public:
 	// constructor
@@ -40,6 +52,25 @@ public:
 		H = new tnode<key_type>;
 		H->left = H->right = H->parent = H;
 		H->is_nill = true;
+		n = 0;
+	}
+
+	int size()const {
+		return this->n;
+	}
+	bool empty()const {
+		return H->left == H->parent == H->right;
+	}
+	~set() {
+		clear();
+		delete H;
+	}
+
+	//clear function//////////
+	void clear() {
+		// only dummy node remains all other are deleted 
+		clear_r(H->parent);
+		H->left = H->parent = H->right = H;
 		n = 0;
 	}
 	/////////////////////////////////////////////////////
@@ -348,17 +379,14 @@ public:
 					to_del->parent->right = succ;
 				}
 			}// end of else
-
-
-
-
 			delete to_del;
 			--n;
 			return iterator(succ);
 			// todo: deleting root node case }
-		}//end of else 
-
-		
+		}//end of else 	
 	}//end of erase 
+	////////////////////////////////
+
+
 };
 
