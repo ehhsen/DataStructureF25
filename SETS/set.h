@@ -43,6 +43,28 @@ private:
 			delete ptr;
 		}
 	}
+	/////////COPY FUNCTION FOR OPERATOR=
+		tnode<key_type>* copy(tnode<key_type>* ptr)
+		{
+			if(ptr->is_nill) {
+				return this->H;
+			}
+			tnode<key_type>* nn;
+			nn = new tnode<key_type>;
+			nn->key = ptr->key;
+
+			nn->left = copy(ptr->left);
+			nn->right = copy(ptr->right);
+				
+			//set parent pointers
+			if (nn->left != H) {
+				nn->left->parent = nn;
+			}
+			if (nn->right != H) {
+				nn->right->parent = nn;
+			}
+			return nn;
+		}//END OF COPY
 
 
 
@@ -65,6 +87,35 @@ public:
 		clear();
 		delete H;
 	}
+	////////////////////OPERATOR=//////////////
+	set<key_type>& operator= (const set<key_type>& other) {
+		
+		clear();
+		
+		//2: set H->left 
+		//3: set H->right
+		// 
+		//1: set parent of H
+		if (other.H->parent != other.H) { // will  not copy if other set is empty
+			H->parent = copy(other.H->parent);
+			H->parent->parent = H; // parent of root node
+			
+		}
+		//
+		tnode<key_type>* temp = H->parent;
+		while (temp->left != H) {
+			temp = temp->left;
+		}
+		H->left = temp;
+		while (temp->right != H) {
+			temp = temp->right;
+		}
+		H->right = temp;
+	
+		this->n = other.n;
+		return *this;
+	}
+
 
 	//clear function//////////
 	void clear() {
@@ -387,6 +438,8 @@ public:
 	}//end of erase 
 	////////////////////////////////
 
-
 };
+
+
+
 
