@@ -1,5 +1,7 @@
 #pragma once
 #include"tnode.h"
+#include<algorithm>
+#include<queue>
 
 template <typename key_type>
 class set {
@@ -67,6 +69,124 @@ private:
 		}//END OF COPY
 
 
+	void update_height(tnode<key_type>* ptr) {
+		// leaf node sa root node tak sab nodes ki height update kare ga
+		ptr->height = 1 + std::max(ptr->left->height, ptr->right->height);
+	}
+	int balance_factor(tnode<key_type>* ptr) {
+		// this function will calculate balance factor
+		//if balance factor == 2 or -2  we will perform rotations based on x, y, z
+		return ptr->left->height - ptr->right->height;
+	}
+
+	tnode<key_type>* left_rotate(tnode<key_type>* ptr) {
+		tnode<key_type>* x, *y, *left_y, *Parent_x;
+		x = ptr;
+		Parent_x = x->parent;
+		//y = taller child of x : z = taller child of y
+		y = x->right;   // agar +ve ha tou left side taller ha agar -ve ha tou right side taller hoge according to our implementation of balance factor
+		left_y = y->left;
+
+		///////now change pointers//////////
+		//pointer 1: make x left child of y
+		y->left = x;
+		//pointer 2: change parent of x
+		x->parent = y;
+		//pointer 3: make left child of y , right child of x
+		x->right = left_y;
+		//pointer 4: if x->right exists: set its parent tobe x
+		if (left_y != H) {
+			left_y->parent = x;
+		}
+		//pointer 5: now assign x ka parent to y
+		y->parent = Parent_x;
+		//pointer 6: now point x ka parent to y
+		if (Parent_x == H) {
+			H->parent = y;
+		}
+		else if (Parent_x->left == x) {  /*agar x apne parent ka left par ha tou y b left pa aye ga*/
+			Parent_x->left = y;
+		}
+		else {
+			Parent_x->right = y;
+		}
+		/////update height of x and y
+		update_height(x);
+		update_height(y);
+		return y;
+	}
+
+	tnode<key_type>* right_rotate(tnode<key_type>* ptr) {
+		tnode<key_type>* x, * y, * right_y, *Parent_x;
+		x = ptr;
+		Parent_x = x->parent;
+		y = x->left;
+		right_y = y->right;
+		
+		//changing pointers:
+		//1: x ko y ki right par
+		y->right = x;
+		x->parent = y;
+		x->left = right_y;
+		if (right_y != H) {
+			right_y->parent = x;
+		}
+		
+		// parent change
+		y->parent = Parent_x;
+		if (Parent_x == H) {   // checks if x is root node?
+			H->parent = y;
+		}
+		else if (Parent_x->right == x) {
+			Parent_x->right = y;
+		}
+		else {
+			Parent_x->left = y;
+		}
+			
+		// now updating height of x and y
+		update_height(x);
+		update_height(y);
+		return y;
+		
+	}
+
+	void rebalance(tnode<key_type>* ptr) {
+		// in rebalance function
+		while (ptr != H) {
+
+			// tree is unbalanced at node ptr
+		// now we will balance it, for that we need y and z , these are nodes that have max height along the nn or to_del
+		//perfom rotations		
+			update_height(ptr);
+			if (balance_factor(ptr) >= 2 ){  // imbalance is on left side
+				if (balance_factor(ptr->left) >= 0) {
+					//Left of left  TODO: make a function for it and pass ptr to it 
+					right_rotate(ptr);
+				}
+				else if (balance_factor(ptr->left) < 0) {
+					//Left of right TODO: make a function for it and pass ptr to it 
+					left_rotate(ptr->left);
+					right_rotate(ptr);
+				}
+				
+			}/// >1
+			if (balance_factor(ptr) <= -2) {  // imbalance is on right side
+				if (balance_factor(ptr->right) > 0) {
+					//RL rotation	TODO: make a function for it and pass ptr to it 
+					right_rotate(ptr->right);
+					left_rotate(ptr);
+				}
+				else if (balance_factor(ptr->right) <= 0) {
+					//RR rotation	TODO: make a function for it and pass ptr to it 
+					left_rotate(ptr);
+				}
+			}// <1
+
+			ptr = ptr->parent;
+		}//end of while
+		
+	}//end of rebalance 
 
 public:
 	// constructor
@@ -115,7 +235,6 @@ public:
 		this->n = other.n;
 		return *this;
 	}
-
 
 	//clear function//////////
 	void clear() {
@@ -249,6 +368,9 @@ public:
 		if (H->parent == H) {  // only true when tree is empty
 			H->parent = H->left = H->right = nn;
 			++n;
+			
+			H->is_nill = true;
+			H->height = 0;
 			// now we take iterator to newly inserted tnode and return that
 			iterator it(nn);
 			return std::pair<iterator, bool>(it, true);
@@ -300,6 +422,14 @@ public:
 			}
 
 		}// end of while 
+		/////////////////////////////////////AVL		BASED	IMPLEMENTATION		//////////////////////////////////
+		// private member function rebalance that will balance the tree after each insertion
+		// all other functions needed to balance will be called from this function
+		 
+		rebalance(nn);
+		
+		/////////////////////////////////////AVL		BASED	IMPLEMENTATION		//////////////////////////////////
+
 
 		return { iterator(), false };
 
@@ -313,6 +443,7 @@ public:
 		tnode<key_type>* right; // right child of to_del
 		to_del = pos.ptr;
 		tnode<key_type>* succ; // successor tnode
+		tnode<key_type>* BASHEER; // this node will be give as a  and argument to implemement AVL;
 		succ = successor(to_del);
 
 		//case 1: deleting leaf tnode////////////////////////////////////
@@ -334,11 +465,15 @@ public:
 				H->right = to_del->parent;
 			}
 			////////////////////////////////////////
-
+			BASHEER = to_del->parent;
 			delete to_del;
 			--n;
 			iterator it;
 			it.ptr = succ;
+
+
+
+			rebalance(BASHEER);
 			return it;
 		}//end of if
 
@@ -355,15 +490,17 @@ public:
 			}
 			left->parent = to_del->parent;
 
-
+			BASHEER = to_del->parent;
 
 			delete to_del;
 			--n;
+			rebalance(BASHEER);
 			iterator it;
 			it.ptr = succ;
 			return it;
 		}// end of case when node has only 1 child and its only left child 
 
+		//case 2.2
 		else if (to_del->right != H && to_del->left == H)
 		{
 			right = to_del->right;
@@ -375,7 +512,10 @@ public:
 				to_del->parent->right = right;
 			}
 			succ = successor(to_del);
+			BASHEER = to_del->parent;
+
 			delete to_del;
+			rebalance(BASHEER);
 			--n;
 			iterator it;
 			it.ptr = succ;
@@ -408,7 +548,7 @@ public:
 			//case 1: succ is in left subtree of to_del->right
 			else
 			{
-				// part 1: remove succ from its current position, re locate its ptrs
+				// part 1: remove succ from its current position, relocate its ptrs
 				//succ's right exists then move its right 
 				if (!succ->right->is_nill)
 				{
@@ -430,16 +570,49 @@ public:
 					to_del->parent->right = succ;
 				}
 			}// end of else
+
+			//if succ id intermediate node then 
+			if (to_del->right == succ) {
+				BASHEER = succ;
+			}
+			else {
+				BASHEER = succ->parent;
+			}
 			delete to_del;
+		
+			rebalance(BASHEER);
+			
 			--n;
 			return iterator(succ);
 			// todo: deleting root node case }
 		}//end of else 	
 	}//end of erase 
-	////////////////////////////////
+	////////////////////////////////  test code generated by Gen Ai only for testing purposes
+	void inorder_r(tnode<key_type>* node) {
+		if (node == H) return;
+
+		inorder_r(node->left);
+		std::cout << node->key << " ";
+		inorder_r(node->right);
+	}
+	void inorder() {
+		inorder_r(H->parent);   // root lives here
+		std::cout << "\n";
+	}
+	void level_order() {
+		if (H->parent == H) return;
+
+		std::queue< tnode<key_type>* > q;
+		q.push(H->parent);
+
+		while (!q.empty()) {
+			auto* cur = q.front(); q.pop();
+			std::cout << cur->key << "(h=" << cur->height << ") ";
+
+			if (cur->left != H) q.push(cur->left);
+			if (cur->right != H) q.push(cur->right);
+		}
+		std::cout << "\n";
+	}
 
 };
-
-
-
-
