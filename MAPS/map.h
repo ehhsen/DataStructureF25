@@ -282,6 +282,10 @@ public:
 		bool operator!=(const iterator& other) const {
 			return this->ptr != other.ptr;
 		}
+		bool operator==(const iterator& other)const {
+			return this->ptr == other.ptr;
+		}
+
 		iterator& operator++() {
 			//case1:  right child exists
 			if (!ptr->right->is_nill) {
@@ -311,7 +315,33 @@ public:
 
 		}//end of ++
 
-	};
+	};// end of iterator class
+
+	T& at(const key_type& key) {
+		iterator it = find(key);
+		if (it == end()) {
+			//value not found
+			throw("out of range");
+		}
+		else {
+			return it.ptr->data.second;
+		}
+
+
+	}// end of at{} function
+
+	T& operator[](const key_type& key) {
+		iterator it;
+		it = find(key);
+		if (it == end()) {
+			// value not found : insert it
+			std::pair<iterator, bool> result;
+			result = insert({ key, T() });
+			iterator it = result.first;
+			
+		}
+		return it.ptr->data.second;
+	}
 
 	//end function
 	iterator end() {
@@ -330,8 +360,8 @@ public:
 
 	///////////////////////////////////////////////
 	//find function
-	iterator find(const key_type value)const {
-		mnode<key_type, T>* temp = H->parent;
+	iterator find(const key_type value) {
+		mnode<key_type, T>* temp = H->parent; 
 
 		if (temp->data.first == value) {
 			iterator it(temp);
@@ -341,30 +371,25 @@ public:
 		{
 			if (value < temp->data.first) {  // for smaller 
 				temp = temp->left;
-				if (temp->data.first == value) {
-					iterator it(temp);
-					return it;
-				}
-
+				
 			}
 			else if (value > temp->data.first) {
 				temp = temp->right;
-				if (temp->data.first == value) {
-					iterator it(temp);
-					return it;
-				}
-
+				
 			}
-			if (temp == H) {// value not found, reached leaf node's right or left ------ returns iterator pass the last element
-				return end();
+			else{
+				
+				return iterator(temp);
 			}
+			// value not found, reached leaf node's right or left ------ returns iterator pass the last element
 		}//end of while
+		return end();
 	}//end of find 
 
 	////////////////////////////////////////////////////
 	//insert function          // iterator to inserted element // bool = true if element inserted successfully
-	std::pair<iterator, bool> insert(const std::pair<key_type, T>& value) {
-		iterator it = find(value->first);
+	std::pair<iterator, bool> insert(const std::pair<key_type, T>& p) {
+		iterator it = find(p.first);
 		//todo: check if value exixts by creating find function 
 		if (it != end()) {
 			//iterator to that value which is already present
@@ -379,7 +404,7 @@ public:
 		nn->left = H;
 		nn->right = H;
 		nn->parent = H;
-		nn->data  = value;  // pair is assighned to pair
+		nn->data  = p;  // pair is assighned to pair
 		nn->is_nill = false;
 		nn->height = 1;
 
@@ -399,7 +424,7 @@ public:
 		temp = H->parent;  // root tnode
 		while (true)
 		{
-			if (value.first < temp->data.first) {  // goto left side 
+			if (p.first < temp->data.first) {  // goto left side 
 				if (temp->left != H) {
 					temp = temp->left;
 				}
@@ -409,10 +434,10 @@ public:
 					nn->parent = temp;
 
 
-					if (value.first < H->left->data.first) {
+					if (p.first < H->left->data.first) {
 						H->left = nn;
 					}
-					if (value.first > H->right->data.first) {
+					if (p.first > H->right->data.first) {
 						H->right = nn;
 					}
 					++n;
@@ -420,10 +445,10 @@ public:
 					iterator it(nn);
 
 					// checks for left and right of dummy node 
-					if (value.first < H->left->data.first) {
+					if (p.first < H->left->data.first) {
 						H->left = nn;
 					}
-					if (value.first > H->right->data.first) {
+					if (p.first > H->right->data.first) {
 						H->right = nn;
 					}
 
@@ -431,7 +456,7 @@ public:
 				}
 			}
 			////////////////check for right side//////////////////////////////////// 
-			else if (value.first > temp->data.first) {
+			else if (p.first > temp->data.first) {
 				if (temp->right != H) {
 					temp = temp->right;
 				}
@@ -443,10 +468,10 @@ public:
 					iterator it(nn);
 
 					// checks for left and right of dummy node
-					if (value.first < H->left->data.first) {
+					if (p.first < H->left->data.first) {
 						H->left = nn;
 					}
-					if (value.first > H->right->data.first) {
+					if (p.first > H->right->data.first) {
 						H->right = nn;
 					}
 
