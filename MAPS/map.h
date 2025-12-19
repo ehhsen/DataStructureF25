@@ -358,6 +358,29 @@ public:
 		return it;
 	}
 
+	// implement count function
+	// it tells if key exists: 1 or does not exists 0
+	int  count(const key_type& key)  {
+		iterator it = find(key);
+		if (it == end()) {
+			// value not found 
+			return 0;
+
+		}
+		else return 1;
+	}
+	/////////////////////////////////////////////////
+	bool contains(const key_type& key) {
+		// ya btata ha ka key jese koi key mojuud ha map me ya nahe ?
+		iterator it = find(key);
+		if (it == end()) {
+			// value not found 
+			return false;
+
+		}
+		else return true;
+	}
+
 	///////////////////////////////////////////////
 	//find function
 	iterator find(const key_type value) {
