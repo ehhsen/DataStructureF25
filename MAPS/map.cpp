@@ -9,5 +9,7 @@ int main() {
 	std::cout <<" value: " << m.at(2) << std::endl;
 	m[3] = 10;
 
-}
+	//std::cout<<m.count(7);
+	std::cout << m.contains(3);
 
+}
