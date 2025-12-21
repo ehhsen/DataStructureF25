@@ -135,4 +135,19 @@ public:
 		return it;
 	}
 
+	/////////////////////////CAPACITY////////////
+	bool empty() {
+		return n > 0;
+	}
+	int size() {
+		return n;
+	}
+
+
+	iterator erase(iterator pos) {
+		iterator it2 = pos;
+		++it2;
+		pos.um->table[pos.idx].erase(pos.it_list);
+		return it2;
+	}
 };
