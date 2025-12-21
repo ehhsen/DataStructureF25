@@ -7,6 +7,13 @@ int main() {
 	um.insert({ 2, 4 });
 	um.insert({ 3, 9 });
 	um.insert({ 4, 16 });
+	unordered_map<int, int>::iterator it;
+	it = um.begin();
+	while (it != um.end()) {
+		std::cout << it->first;
+		std::cout << it->second<<std::endl;
+		++it;
+	}
 	return 0;
 
 
