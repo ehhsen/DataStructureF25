@@ -9,11 +9,14 @@ int main() {
 	um.insert({ 4, 16 });
 	unordered_map<int, int>::iterator it;
 	it = um.begin();
+	++it;
+	um.erase(it);
 	while (it != um.end()) {
 		std::cout << it->first;
 		std::cout << it->second<<std::endl;
 		++it;
 	}
+
 	return 0;
 
 
