@@ -39,6 +39,10 @@ public:
 		table = new std::list<std::pair< const K, T>>[s];
 
 	}
+	////////////////////
+	~unordered_map() {
+		delete[] table;
+	}
 
 	// insert function
 	std::pair  <typename std::list<std::pair<const K, T>>::iterator  , bool   > insert(const std::pair<const K, T>& p) {
@@ -49,15 +53,18 @@ public:
 		if ( it_list == table[h].end()) { // list.end()
 			table[h].push_back(p);
 			++n;
-			return { it_list, true };
+
+			typename std::list<std::pair<const K, T>>::iterator nn;
+			nn = table[h].end();
+			--nn;
+			// taking an iterator to new element and returning
+
+			return { nn, true };
 		}
 		else {
 			return { it_list, false };// key already exists
 		}
 	}
-
-
-
 
 	// class iterator to the unordered map
 
@@ -66,11 +73,66 @@ public:
 		int idx;  // index of table------------
 		// iterator to list        [.][--/\--][.]
 		typename std::list<std::pair<const K, T>>::iterator it_list;  
-		unordered_map<const K, T>* um;
+		const unordered_map< K, T>* um;
 	public:
-		friend class unordered_map;
+		friend class unordered_map< K, T>;
 
+		//////////
+		std::pair<const K, T>& operator*() const {
+			return *it_list;
+		}
+		
+		iterator& operator++() {
+			++it_list; // plus plus list iterator
+			if (it_list == um->table[idx].end()) {
+				++idx;
+				while (idx < um -> m && um->table[idx].empty()) {
+					++idx;
+				}
+				if (idx == um->m) {
+					idx = um->m - 1;
+				}
+				it_list = um->table[idx].begin();
 
+			}
+			return *this;
+		}// end of operator++
+
+		bool operator!=(const iterator& other) const {
+			if (um != other.um ||	idx != other.idx || it_list != other.it_list) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		std::pair<const K, T>* operator->() const {
+			return &(*it_list);
+		}
+	
 	};
+
+	/////// BEGIN ////
+	iterator begin()const {
+		iterator it;
+		it.um = this;
+		it.idx = 0;
+		while (it.idx < m && table[it.idx].empty()) {
+			++it.idx;
+		}
+		if (it.idx == m) {
+			it.idx = m - 1;
+		}
+		it.it_list = table[it.idx].begin();
+		return it;
+	}
+	iterator end()const {
+		iterator it;
+		it.um = this;
+		it.idx = m - 1;
+		it.it_list = table[it.idx].end();
+		return it;
+	}
 
 };
