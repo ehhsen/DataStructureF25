@@ -1,3 +1,9 @@
+//which is better?  array based implememtation or linked list based?
+// answer: depends on our requirements
+// linked list based implememtation provides ---flexibility where size of stack can vary greatly. Prefereable where size of stack is unpedictable cuz it will save memory there
+// array based implememtation is === short, simple, and efficient. If pushing and popping occur frequently, the array-based implementation executes faster because it does not
+// incur the run-time overhead of the new and delete operations. (when MAX_ITEMS in the ADT specification) is small and we can be sure that we do not need
+// to exceed the declared stack size, the array-based implementation is a good choice. 
 #pragma once
 // implementing linked list based stack
 #include<iostream>
@@ -86,4 +92,5 @@ public:
 	//	}
 
 	//}	
+
 };
