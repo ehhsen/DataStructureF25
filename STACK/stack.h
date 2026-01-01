@@ -5,12 +5,14 @@ class stack {
 private:
 	int SIZE, TOP;
 	int* DATA;
+int n;
 
 public:
 	stack(int s = 10) {
 		TOP = -1;
 		SIZE = s;
 		DATA = new int[SIZE];
+		int n =0;
 	}
 	~stack() {
 		delete[] DATA;
@@ -23,6 +25,7 @@ public:
 		else {
 			++TOP;
 			DATA[TOP] = val;
+			++n;
 		}
 	}
 	void pop() {
@@ -32,6 +35,7 @@ public:
 		}
 		else {
 			--TOP;
+			--n;
 		}
 	}
 	int top()const{
@@ -56,3 +60,4 @@ public:
 		std::swap(DATA, other.DATA);
 	}
 };
+
