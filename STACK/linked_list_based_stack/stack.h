@@ -7,13 +7,14 @@
 #pragma once
 // implementing linked list based stack
 #include<iostream>
+template <typename T>
 struct node {
-	int val;
+	T val;
 	node* link;
 };
 class stack {
 private:
-	node* TOP;
+	node<T>* TOP;
 	int n;
 public:
 	//constructor
@@ -25,13 +26,13 @@ public:
 	~stack() {
 		//TODO: deallocate memory
 		while (TOP != nullptr) {
-			node* temp;
+			node<T>* temp;
 			temp = TOP;
 			TOP = temp->link;
 			delete temp;
 		}
 	}
-	int top() {
+	T top() {
 		try {
 			if (TOP == nullptr) {
 				throw("stack underflow");
@@ -49,8 +50,8 @@ public:
 	}
 	void push(int& val) {
 		
-		node* temp;
-		temp = new node;
+		node<T>* temp;
+		temp = new node<T>;
 		temp->val = val;
 		temp->link = TOP; // nullptr for first iteration
 		TOP = temp;
@@ -67,7 +68,7 @@ public:
 			throw("Stack Underflow");
 		}
 		else {
-			node* temp;
+			node<T>* temp;
 			temp = TOP->link;
 			delete TOP;
 			TOP = temp;
@@ -76,21 +77,53 @@ public:
 	}
 
 	//operator overloading
-	//stack& operator= (const stack& other) {
-	//	// delete memory of *this stack
-	//	~stack();
+	stack& operator= (const stack& other) {
+		// check if both are equal 
+		// if(this == &other){
+		// 	return *this;
+			
+		//clear current stack; 
+		node<T>* temp;
+		while( TOP != nullptr ){
+			temp = TOP;
+			TOP = TOP->link;
+			delete temp;
+		}
+		n =0;
+		//check if other stack is empty
+		if(other.TOP == nullptr){
+			return *this;
 
-	//	//////////
 
-	//	node *temp, * prev;
-	//	temp = other.TOP;
-	//	while (temp != nullptr) {
-	//		node* temp2;
-	//		temp2 = new node;
-	//		//TODO: delete
+		//copy first node, take 2 pointers one for both stacks and then traverse
+		TOP = new node<T>;
+		TOP->val = other.TOP->val;
+		TOP->link = nullptr;
 
-	//	}
+		//pointer to this stack
+		node<T>* curr_stack_ptr = TOP;
+		//pointer to other stack
+		node<T>* other_stack_ptr = other.TOP->link;
 
-	//}	
+		++n;
+
+		//loop to copy all nodes
+			while(other_stack_ptr != nullptr){
+				//create new node
+				node<T>*nn ;
+				nn->val = other->val;
+				nn->link = nullptr;
+
+				//update ptr's
+				other_stack_ptr = other_stack_ptr->link;
+				curr_stack_ptr = nn;
+
+				curr_stack_ptr = curr_stack_ptr->link;
+				++n;
+			}
+		
+	}//end of function=
+	
 
 };
+
