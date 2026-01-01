@@ -94,7 +94,6 @@ public:
 		if(other.TOP == nullptr){
 			return *this;
 
-
 		//copy first node, take 2 pointers one for both stacks and then traverse
 		TOP = new node<T>;
 		TOP->val = other.TOP->val;
@@ -104,26 +103,28 @@ public:
 		node<T>* curr_stack_ptr = TOP;
 		//pointer to other stack
 		node<T>* other_stack_ptr = other.TOP->link;
-
 		++n;
 
 		//loop to copy all nodes
 			while(other_stack_ptr != nullptr){
 				//create new node
 				node<T>*nn ;
-				nn->val = other->val;
+				nn = new node<T>;
+				nn->val = other_stack_ptr->val;
 				nn->link = nullptr;
 
 				//update ptr's
-				other_stack_ptr = other_stack_ptr->link;
-				curr_stack_ptr = nn;
+				other_stack_ptr = other_stack_ptr->link;		
 
-				curr_stack_ptr = curr_stack_ptr->link;
+				curr_stack_ptr->link = nn;
+				curr_stack_ptr = nn;
 				++n;
+				
 			}
-		
+		return *this;
 	}//end of function=
 	
 
 };
+
 
