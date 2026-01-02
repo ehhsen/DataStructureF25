@@ -17,6 +17,11 @@ private:
 	node<T>* TOP;
 	int n;
 public:
+	template<typename T>
+	friend bool operator==(const stack<T>&, const stack<T>&);
+	template <typename T>
+	friend bool operator< (const stack<T>&, const stack<T>&);
+
 	//constructor
 	stack() {
 		TOP = nullptr;
@@ -129,8 +134,15 @@ stack(const stack<T>& other ){
 		return *this;
 	}//end of function=
 	
+	void swap( stack<T>& other ){
+		std::swap(TOP, other.TOP);
+		std::swap(size, other.size);// this code will explode if copy constructor or operator= is buggy, cuz destuctor will try to free same space twice
+	}
 
+	
 };
+
+
 
 
 
