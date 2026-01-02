@@ -1,10 +1,12 @@
 #pragma once
-#include<stack>
+
 
 template <typename T>
 class stack {
 private:
-	int SIZE, TOP, * DATA;
+	int SIZE;
+	T TOP;
+	T* DATA;
 public:
 	template<typename T>
 	friend bool operator==(const stack<T>&, const stack<T>&);
@@ -14,14 +16,14 @@ public:
 	stack(int s = 10) {
 		TOP = -1;
 		SIZE = s;
-		DATA = new int[SIZE];
+		DATA = new T[SIZE];
 	}
 	~stack() {
 		delete[] DATA;
 
 	}
 
-	int top() const {
+	T top() const {
 		return DATA[TOP];
 	}
 	bool empty() {
@@ -51,12 +53,11 @@ bool operator == (const stack<T> &lhs, const stack<T> &rhs) {
 		for (int i = 0; i < lhs.SIZE; i++) {
 			if (lhs.DATA[i] == rhs.DATA[i]) {
 				check = true;
-
 			}		
 			else {
-				return false;
-				
+				return false;	
 			}
+		return true;	
 		}
 	}
 	else {
@@ -74,9 +75,5 @@ bool operator< (const stack<T>&lhs , const stack<T>&rhs ) {
 			else
 				check = false;
 		}
-		return check;
-
-
-	
-	
+		return check;	
 }
