@@ -22,6 +22,11 @@ public:
 		TOP = nullptr;
 		n = 0;
 	}
+stack(const stack<T>& other ){
+	TOP = nullptr;
+	operator=(other);
+}
+
 	//destructor
 	~stack() {
 		//TODO: deallocate memory
@@ -126,5 +131,6 @@ public:
 	
 
 };
+
 
 
