@@ -249,6 +249,32 @@ public:
 		other.n = 0;
 
 	}
+
+
+	void unique() {
+		if (empty()) {
+			
+		}
+		else {
+			node<T>* prev, * temp;
+			prev = H;
+			temp = H->link;
+			while (temp != nullptr) {
+				if (temp->val == prev->val) {
+					node<T>* del;
+					del = temp;
+					temp = temp->link;
+					prev->link = temp;
+					delete del;
+				}
+				else {
+					prev = prev->link;
+					temp = temp->link;
+				}
+			}
+		}
+	}//end of unique
+
 };
 //declare Non-member functions
 template <typename T>
