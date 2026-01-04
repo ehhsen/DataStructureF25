@@ -19,14 +19,7 @@ public:
 	}
 	/////////////////////////////////
 	~list() {
-
-		while (H->next != H) {
-			dnode<T>* temp;
-			temp = H->prev; 
-			H->prev = temp->prev;
-			temp->prev->next = H;
-			delete temp;	
-		}
+		clear();
 		delete H;  // dummy dnode<T>
 	}
 	////////////////////////////////////
@@ -419,4 +412,5 @@ bool operator==(const list<T>& lhs, const list<T>& rhs) {
 	}
 
 }// end of operator=
+
 ///////////////////////////////////////////
