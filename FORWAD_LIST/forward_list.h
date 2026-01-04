@@ -136,9 +136,10 @@ public:
 	private:
 		node<T>* ptr;
 	public:
+		
+		friend class forward_list;
 		iterator() {
 			ptr = nullptr;
-			friend class forward_list;
 
 		}
 		T& operator*() {
@@ -151,6 +152,11 @@ public:
 			ptr = ptr->link;
 			return *this;
 		}
+		bool operator!=(iterator& other) {
+			return this->ptr != other->ptr;
+		}
+
+
 	};
 
 
@@ -199,18 +205,35 @@ public:
 		n = n - counter;
 	}
 	
-	//iterator& insert_after(iterator& it, T &val) {
-	//	node<T>* temp;
-	//	temp = new node<T>;
-	//	temp->val = val;
-	//	temp->link = it.ptr->link;
-	//	it.ptr->link = temp;
-	//	it.ptr = it.ptr->link;
-	//	return it;
-	//}
-	////////////////////////////
-	//iterator erase_after(const iterator& itr)
-	//{
+	iterator& insert_after( iterator& pos,const T &value) {
+		node<T>* temp;
+		temp = new node<T>;
+		temp->val = value;
+		temp->link = pos.ptr->link;
+		
+		pos.ptr->link = temp;
+		//pos.ptr = pos.ptr->link;
+
+		iterator it;
+		it.ptr = temp;
+		++n;
+		return it;
+	}
+	iterator erase_after(iterator pos) {
+		if (pos.ptr == nullptr || pos.ptr->link == nullptr)
+			return end();
+
+		node<T>* temp;
+		temp = pos.ptr->link;
+		//pos.ptr = temp->link;
+		pos.ptr->link = temp->link;
+		delete temp;
+		--n;;
+		iterator it;
+		it.ptr = pos.ptr->link;
+		
+		return it;
+	}
 
 	//	node<T>* temp;
 	//	temp= itr.ptr->link;
@@ -231,7 +254,6 @@ public:
 				ptr1 = ptr1->link;
 			}
 			else {
-				///////////////////
 				node<T>* tempp = ptr2->link;
 				ptr2->link = ptr1->link;
 				ptr1->link = ptr2;
@@ -245,11 +267,10 @@ public:
 	
 		}
 		n = n + other.n;
-		other.H->link = nullptr;
+		other.H->link = other.H;
 		other.n = 0;
 
 	}
-
 
 	void unique() {
 		if (empty()) {
