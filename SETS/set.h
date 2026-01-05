@@ -358,9 +358,7 @@ public:
 		tnode<key_type>* nn, * temp;
 		nn = new tnode<key_type>;
 		// assigning values to members of new node
-		nn->left = H;
-		nn->right = H;
-		nn->parent = H;
+		nn->left = nn->right = nn->parent = H;
 		nn->key = value;
 		nn->is_nill = false;
 
@@ -393,9 +391,6 @@ public:
 					if (value < H->left->key) {
 						H->left = nn;
 					}
-					if (value > H->right->key) {
-						H->right = nn;
-					}
 					++n;
 					iterator it(nn);
 					return std::pair<iterator, bool>(it, true);
@@ -410,14 +405,12 @@ public:
 					temp->right = nn;
 					nn->parent = temp;
 					++n;
+						
+					if (value > H->right->key) {
+						H->right = nn;
+						}
 					iterator it(nn);
 					return std::pair<iterator, bool>(it, true);
-				}
-				if (value < H->left->key) {
-					H->left = nn;
-				}
-				if (value > H->right->key) {
-					H->right = nn;
 				}
 			}
 
@@ -616,3 +609,4 @@ public:
 	}
 
 };
+
