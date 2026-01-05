@@ -295,8 +295,8 @@ public:
 		}
 	}// end of resize 
 	void swap(list& other) {
-		std::swap(this.H, other.H);
-		std::swap(this.n, other.n);
+		std::swap(this->H, other.H);
+		std::swap(this->n, other.n);
 	}// end of swap
 
 	//OPERATIONS
@@ -402,6 +402,7 @@ bool operator==(const list<T>& lhs, const list<T>& rhs) {
 }// end of operator=
 
 ///////////////////////////////////////////
+
 
 
 
