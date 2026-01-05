@@ -253,6 +253,9 @@ public:
 	// output: iterator to dnode after erased node
 	// process:: link pointers--- check if it was last node--- return iterator
 	iterator erase(iterator pos) {
+		if (pos == begin()){
+			return end();
+		}
 		dnode<T>* temp;
 		temp = pos.ptr;
 		temp->prev->next = temp->next;
@@ -414,4 +417,5 @@ bool operator==(const list<T>& lhs, const list<T>& rhs) {
 }// end of operator=
 
 ///////////////////////////////////////////
+
 
