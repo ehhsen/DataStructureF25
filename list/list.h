@@ -238,13 +238,13 @@ public:
 		nn->next = pos.ptr;
 		nn->prev = pos.ptr->prev;
 
-		pos.ptr->prev->next = nn;
-		pos.ptr->prev = nn;
+		pos.ptr->next->prev = nn;
+		pos.ptr->next = nn;
 		++n;
 		// take an itetaor to nn and return that
-		iterator it;
 		
-		it.ptr = pos.ptr->prev;  // new dnode 
+		iterator it;
+		it.ptr = nn  // new dnode 
 		return it;
 	}// end of insert function
 
@@ -414,3 +414,4 @@ bool operator==(const list<T>& lhs, const list<T>& rhs) {
 }// end of operator=
 
 ///////////////////////////////////////////
+
