@@ -1,5 +1,6 @@
 #pragma once
 #include"dnode.h"
+#include<utility>
 
 template<typename T>
 class list {
@@ -293,20 +294,11 @@ public:
 			}
 		}
 	}// end of resize 
-	//////////////////////////////////////////////////////////
 	void swap(list& other) {
-		dnode<T>* temp1 = H; // points to dummy head of this
-
-		H = other.H;
-		other.H = temp1;
-
-		int N;
-		N = n;
-		n = other.n;
-		other.n = N;
-
+		std::swap(this.H, other.H);
+		std::swap(this.n, other.n);
 	}// end of swap
-	/////////////////////////////////////////////////////////////////////
+
 	//OPERATIONS
 	void merge(list& other) {
 		//MERGES Two sorted list into one sorted list
@@ -410,6 +402,7 @@ bool operator==(const list<T>& lhs, const list<T>& rhs) {
 }// end of operator=
 
 ///////////////////////////////////////////
+
 
 
 
