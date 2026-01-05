@@ -283,20 +283,13 @@ public:
 		//	If the current size is greater than count, the container is reduced to its first count elements.
 
 		else if (count < n) {
-			while (this->size() != count) {
-				this->pop_back();
+			for (int i = n ; i >  count ; --i){
+				pop_back();
 			}
 		}
 		else { // in this case: we have to add nodes:
-			while (n < count) {
-				// create node and add it at last
-				dnode<T>* nn = new dnode<T>;
-				nn->val = T();
-				nn->prev = H->prev;
-				H->prev->next = nn;
-				nn->next = H;
-				H->prev = nn;
-				++n;
+			for(int i = n; i < count; ++i){
+				push_back(T());
 			}
 		}
 	}// end of resize 
@@ -417,5 +410,6 @@ bool operator==(const list<T>& lhs, const list<T>& rhs) {
 }// end of operator=
 
 ///////////////////////////////////////////
+
 
 
