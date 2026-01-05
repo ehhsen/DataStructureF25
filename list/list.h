@@ -172,9 +172,6 @@ public:
 		it.ptr = H;
 		return it;
 	}
-	////////////////////////////
-
-	/////////////////////////////
 	class reverse_iterator {
 	private:
 		dnode<T>* ptr;
@@ -211,7 +208,6 @@ public:
 		rit.ptr = H->prev;
 		return rit;
 	}
-	///////////////////////////////////
 
 	void clear() {
 		while (H->prev != H) {
@@ -346,34 +342,47 @@ public:
 			}
 			else {
 				temp = temp->next;
-			}
-			
-			
+			}		
 		}
+	}//removed
 
-
-	}
-
-
-
-
-	// has bugs : TODO === Remove them , 
 	void reverse() {
-		// reverses order such thAT NO ptr or iterator is violated
-		dnode<T>* e, * s;  // s= starting,  e =  ending  node od non reversed list 
-		s = H->next;
-		e = H->prev;
-		H->next = e;
-		while (s->next != H) {
-			// change their order
-			e->prev->next = H;
-			H->prev = e->prev;
-
-			e->prev = s->prev;
-			e->next = s;
-
-			s->prev = e;
+		node<T>* first, *last;
+		if(empty() || n == 1 ){
+			return;
 		}
+		// hard way
+		// first = H->prev;
+		// last = H->next;
+		
+		// first->next = last;
+		// H->prev= first->prev;
+		// H->prev->next = H;
+		// first->prev = H;
+		// H->next = first;
+		// last->prev = first;
+		// while(last->next  != H){
+		// 	node<T>* temp;
+		// 	temp = H->prev;
+		// 	temp->prev->next = H;
+		// 	H->prev = temp->prev;
+			
+		// 	temp->next = first->next;
+		// 	first->next->prev= temp;
+		// 	temp->prev = first;
+		// 	first ->next = temp;
+		// 	first = temp;	
+		// }
+
+		// easy peazy
+		node<T>* curr = H;
+		std::swap(curr->prev, curr->next);
+		curr = curr->prev;
+		while(curr != H){	
+		std::swap(curr->prev, curr->next);
+		curr = curr->prev;
+		}
+		
 	}//end of reverse 
 };
 
@@ -400,10 +409,3 @@ bool operator==(const list<T>& lhs, const list<T>& rhs) {
 	}
 
 }// end of operator=
-
-///////////////////////////////////////////
-
-
-
-
-
