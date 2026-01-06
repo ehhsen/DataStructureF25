@@ -21,14 +21,14 @@ private:
 			}
 			return ptr;
 		}// end of case 1
-		else {
-			while (ptr->parent->right == ptr) {
-				ptr = ptr->parent;
+			
+		//case2: no right subtreee
+		temp = ptr->parent;
+		while (!temp->is_nill && ptr == temp->right) {
+			ptr = temp;
+			temp = temp->parent;
 			}
-			ptr = ptr->parent;
-			return ptr;
-
-		}
+			return temp;
 	}//end of successor function
 
 
@@ -543,3 +543,4 @@ public:
 		}//end of else 	
 	}//end of erase 
 };
+
