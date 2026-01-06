@@ -21,20 +21,20 @@ private:
 			}
 			return ptr;
 		}// end of case 1
-			
+
 		//case2: no right subtreee
 		temp = ptr->parent;
 		while (!temp->is_nill && ptr == temp->right) {
 			ptr = temp;
 			temp = temp->parent;
-			}
-			return temp;
+		}
+		return temp;
 	}//end of successor function
 
 
 	//recursive clear function
 	void clear_r(tnode<key_type>* ptr) {
-		if (ptr == H) { 
+		if (ptr == H) {
 			return;
 		}
 		else {
@@ -43,32 +43,35 @@ private:
 			delete ptr;
 		}
 	}
-	/////////COPY FUNCTION FOR OPERATOR=
-		tnode<key_type>* copy(tnode<key_type>* ptr)
-		{
-			if(ptr->is_nill) {
-				return this->H;
-			}
-			tnode<key_type>* nn;
-			nn = new tnode<key_type>;
-			nn->key = ptr->key;
 
-			nn->left = copy(ptr->left);
-			nn->right = copy(ptr->right);
-				
-			//set parent pointers
-			if (nn->left != H) {
-				nn->left->parent = nn;
-			}
-			if (nn->right != H) {
-				nn->right->parent = nn;
-			}
-			return nn;
-		}//END OF COPY
+	/////////COPY FUNCTION FOR OPERATOR=
+	tnode<key_type>* copy(tnode<key_type>* ptr)
+	{
+		if (ptr->is_nill) {
+			return this->H;
+		}
+		tnode<key_type>* nn;
+		nn = new tnode<key_type>;
+		nn->key = ptr->key;
+
+		nn->left = copy(ptr->left);
+		nn->right = copy(ptr->right);
+
+		//set parent pointers
+		if (nn->left != H) {
+			nn->left->parent = nn;
+		}
+		if (nn->right != H) {
+			nn->right->parent = nn;
+		}
+		return nn;
+	}//END OF COPY
+
 	void update_height(tnode<key_type>* ptr) {
 		// leaf node sa root node tak sab nodes ki height update kare ga
 		ptr->height = 1 + std::max(ptr->left->height, ptr->right->height);
 	}
+
 	int balance_factor(tnode<key_type>* ptr) {
 		// this function will calculate balance factor
 		//if balance factor == 2 or -2  we will perform rotations based on x, y, z
@@ -76,7 +79,7 @@ private:
 	}
 
 	tnode<key_type>* left_rotate(tnode<key_type>* ptr) {
-		tnode<key_type>* x, *y, *left_y, *Parent_x;
+		tnode<key_type>* x, * y, * left_y, * Parent_x;
 		x = ptr;
 		Parent_x = x->parent;
 		//y = taller child of x : z = taller child of y
@@ -113,12 +116,12 @@ private:
 	}
 
 	tnode<key_type>* right_rotate(tnode<key_type>* ptr) {
-		tnode<key_type>* x, * y, * right_y, *Parent_x;
+		tnode<key_type>* x, * y, * right_y, * Parent_x;
 		x = ptr;
 		Parent_x = x->parent;
 		y = x->left;
 		right_y = y->right;
-		
+
 		//changing pointers:
 		//1: x ko y ki right par
 		y->right = x;
@@ -127,7 +130,7 @@ private:
 		if (right_y != H) {
 			right_y->parent = x;
 		}
-		
+
 		// parent change
 		y->parent = Parent_x;
 		if (Parent_x == H) {   // checks if x is root node?
@@ -139,7 +142,7 @@ private:
 		else {
 			Parent_x->left = y;
 		}
-			
+
 		// now updating height of x and y
 		update_height(x);
 		update_height(y);
@@ -154,7 +157,7 @@ private:
 		// now we will balance it, for that we need y and z , these are nodes that have max height along the nn or to_del
 		//perfom rotations		
 			update_height(ptr);
-			if (balance_factor(ptr) >= 2 ){  // imbalance is on left side
+			if (balance_factor(ptr) >= 2) {  // imbalance is on left side
 				if (balance_factor(ptr->left) >= 0) {
 					//Left of left  TODO: make a function for it and pass ptr to it 
 					right_rotate(ptr);
@@ -164,7 +167,7 @@ private:
 					left_rotate(ptr->left);
 					right_rotate(ptr);
 				}
-				
+
 			}/// >1
 			if (balance_factor(ptr) <= -2) {  // imbalance is on right side
 				if (balance_factor(ptr->right) > 0) {
@@ -180,7 +183,7 @@ private:
 
 			ptr = ptr->parent;
 		}//end of while
-		
+
 	}//end of rebalance 
 
 public:
@@ -202,15 +205,18 @@ public:
 		clear();
 		delete H;
 	}
-	////////////////////OPERATOR=//////////////
+	//OPERATOR=
 	set<key_type>& operator= (const set<key_type>& other) {
-		
+		if (this->H == other->H) {
+			return *this;
+		}
+
 		clear();
 		if (other.H->parent != other.H) { // will  not copy if other set is empty
 			H->parent = copy(other.H->parent);
 			H->parent->parent = H; // parent of root node		
 		}
-		
+
 		tnode<key_type>* temp = H->parent;
 		while (temp->left != H) {
 			temp = temp->left;
@@ -220,14 +226,14 @@ public:
 			temp = temp->right;
 		}
 		H->right = temp;
-	
+
 		this->n = other.n;
 		return *this;
 	}
 
-	//clear function//////////
+	//clear function
 	void clear() {
-		// only dummy node remains all other are deleted 
+		// only dummy node remains all other are deleted
 		clear_r(H->parent);
 		H->left = H->parent = H->right = H;
 		n = 0;
@@ -281,14 +287,14 @@ public:
 
 	};
 
-	//end function
+	
 	iterator end() {
 		//iterator past the last element
 		iterator it;
 		it.ptr = H;
 		return it;
 	}
-	//begin function
+	
 	iterator begin() {
 		//iterator past the last element
 		iterator it;
@@ -325,15 +331,13 @@ public:
 		}//end of while
 	}//end of find 
 
-	////////////////////////////////////////////////////
-	//insert function          // iterator to inserted element // bool = true if element inserted successfully
+
 	std::pair<iterator, bool> insert(const key_type& value) {
 		iterator it = find(value);
-		//todo: check if value exixts by creating find function 
 		if (it != end()) {
-			//iterator to that value which is already present
 			return std::pair<iterator, bool>(it, false);
 		}
+
 		// creating new tnode
 		tnode<key_type>* nn, * temp;
 		nn = new tnode<key_type>;
@@ -341,19 +345,18 @@ public:
 		nn->left = nn->right = nn->parent = H;
 		nn->key = value;
 		nn->is_nill = false;
+		nn->height = 0;
 
 		//root node insertion
 		if (H->parent == H) {  // only true when tree is empty
 			H->parent = H->left = H->right = nn;
 			++n;
-			
-			nn->is_nill = true;
-			H->height = 0;
-			// now we take iterator to newly inserted tnode and return that
+			nn->height = 1;
 			iterator it(nn);
 			return std::pair<iterator, bool>(it, true);
 		}
-		////////////////////// for all other cases 
+
+		//For all other cases 
 		temp = H->parent;  // root tnode
 		while (true)
 		{
@@ -370,11 +373,12 @@ public:
 					}
 					++n;
 					iterator it(nn);
+					rebalance(nn);
 					return std::pair<iterator, bool>(it, true);
 				}
 			}
-			////////////////check for right side//////////////////////////////////// 
-			else if (value > temp->key) {
+			//check right side 
+			else {
 				if (temp->right != H) {
 					temp = temp->right;
 				}
@@ -382,20 +386,20 @@ public:
 					temp->right = nn;
 					nn->parent = temp;
 					++n;
-						
+
 					if (value > H->right->key) {
 						H->right = nn;
-						}
+					}
 					iterator it(nn);
+					rebalance(nn);
 					return std::pair<iterator, bool>(it, true);
 				}
 			}
 
 		}// end of while 
-		 
-		rebalance(nn);
-		return { iterator(), false };
+
 	}//end of insert
+
 	iterator erase(iterator pos)
 	{
 		tnode<key_type>* to_del;  // node we have to delete
@@ -534,13 +538,12 @@ public:
 				BASHEER = succ->parent;
 			}
 			delete to_del;
-		
+
 			rebalance(BASHEER);
-			
+
 			--n;
 			return iterator(succ);
 			// todo: deleting root node case }
 		}//end of else 	
 	}//end of erase 
 };
-
