@@ -27,8 +27,6 @@ private:
 		}
 		return it_list;
 	}
-
-
 public:
 	class iterator;
 
@@ -37,9 +35,7 @@ public:
 		m = s;
 		n = 0;
 		table = new std::list<std::pair< const K, T>>[s];
-
 	}
-	////////////////////
 	~unordered_map() {
 		delete[] table;
 	}
@@ -67,12 +63,10 @@ public:
 		}
 	}
 
-	// class iterator to the unordered map
-
 	class iterator {
 	private:
-		int idx;  // index of table------------
-		// iterator to list        [.][--/\--][.]
+		int idx;  // index of table
+		// iterator to list   
 		typename std::list<std::pair<const K, T>>::iterator it_list;  
 		const unordered_map< K, T>* um;
 	public:
@@ -86,8 +80,6 @@ public:
 			typename std::list<std::pair<const K, T>>::iterator list)
 			: um(map), idx(index), it_list(list) {}   // list initializer method
 
-
-		//////////
 		std::pair<const K, T>& operator*() const {
 			return *it_list;
 		}
@@ -140,10 +132,7 @@ public:
 
 		std::pair<const K, T>* operator->() const {
 			return &(*it_list);
-		}
-
-
-	
+		}	
 	};
 
 	/////// BEGIN ////
@@ -172,15 +161,12 @@ public:
 		return it;
 	}
 
-	/////////////////////////CAPACITY////////////
 	bool empty() {
 		return n == 0;
 	}
 	int size() {
 		return n;
 	}
-
-
 	iterator erase(iterator pos) {
 		iterator it2 = pos;
 		++it2;
@@ -202,9 +188,7 @@ public:
 		std::swap(this->table ,  other.table);
 	}
 
-
-
-		iterator find(const K & key)const {
+	iterator find(const K & key)const {
 			int h = hash(key);
 			int idx = h % m;
 
@@ -221,7 +205,6 @@ public:
 
 			return end();
 		}
-
 
 		//LOOKUP  first implement find(key)
 		T& at(const K& key)const {
@@ -248,5 +231,5 @@ public:
 			}
 			return it.um->table[it.idx].
 		}
-
 };
+
