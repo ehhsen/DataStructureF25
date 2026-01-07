@@ -402,68 +402,105 @@ public:
 
 	iterator erase(iterator pos)
 	{
-		tnode<key_type>* to_del;  // node we have to delete
+		tnode<key_type>* to_del  = pos.ptr;  // node we have to delete
 		tnode<key_type>* left; // left child of to_del
 		tnode<key_type>* right; // right child of to_del
-		to_del = pos.ptr;
-		tnode<key_type>* succ; // successor tnode
-		tnode<key_type>* BASHEER; // this node will be give as a  and argument to implemement AVL;
-		succ = successor(to_del);
+		
+		tnode<key_type>* succ = successor(to_del); // successor tnode
+		tnode<key_type>* balancing_node; // this node will be give as an argument to balance functionto  implemement AVL;
+		
 
-		//case 1: deleting leaf tnode////////////////////////////////////
+		//case 1: deleting leaf tnode
 		if (to_del->left == H && to_del->right == H)
-		{   // leaf node
+		{  
+			////root node case: 
+			//if (to_del->parent == to_del->left == to_del->right) {
+			//	H->parent = H->left = H->right = H;
+			//	--n;
+			//	delete to_del;
+			//	return end();
+			//}
+			
+			// leaf node
 			//left child
 			if (to_del->parent->left == to_del) {
 				to_del->parent->left = H;
 			}
-			else {
+			else { //right child
 				to_del->parent->right = H;
 			}
 
-			/////////////////////////////////////// check  H->left an H->right 
+			// check  H->left and H->right 
 			if (to_del == H->left) {
 				H->left = succ;
 			}
 			if (to_del == H->right) {
 				H->right = to_del->parent;
 			}
-			////////////////////////////////////////
-			BASHEER = to_del->parent;
+			balancing_node = to_del->parent;
 			delete to_del;
 			--n;
 			iterator it;
 			it.ptr = succ;
-			rebalance(BASHEER);
+			rebalance(balancing_node);
 			return it;
 		}//end of if
 
 		//case 2: node has only 1 child : either left or right
+		
 		//case 2.1: has only left child
 		else if (to_del->left != H && to_del->right == H)
 		{
+
+			//root node case: 
+			if (to_del->parent == H) {
+				to_del->left->parent = H;
+				H->parent = to_del->left;
+				--n;
+				iterator it;
+				it.ptr = H->parent;
+				balancing_node = to_del->parent;
+				rebalance(balancing_node);
+				delete to_del;
+				return it;
+
+			}
+
 			left = to_del->left;
 			if (to_del->parent->left == to_del) {
 				to_del->parent->left = left;
 			}
+
 			else {
 				to_del->parent->right = left;
 			}
 			left->parent = to_del->parent;
 
-			BASHEER = to_del->parent;
+			balancing_node = to_del->left;
 
 			delete to_del;
 			--n;
-			rebalance(BASHEER);
+			rebalance(balancing_node);
 			iterator it;
 			it.ptr = succ;
 			return it;
 		}// end of case when node has only 1 child and its only left child 
 
-		//case 2.2
+		//case 2.2 has only right child
 		else if (to_del->right != H && to_del->left == H)
 		{
+			if (to_del->parent == H) {  
+				to_del->right->parent = H;
+				H->parent = to_del->right;
+				--n;
+				iterator it;
+				it.ptr = H->parent;
+				rebalance(H->parent);
+				delete to_del;
+				return it;
+			}
+
+			succ = successor(to_del);
 			right = to_del->right;
 			if (to_del->parent->left == to_del) {  //check if to_Del is right child or left child
 				to_del->parent->left = right;
@@ -472,11 +509,12 @@ public:
 			else {
 				to_del->parent->right = right;
 			}
-			succ = successor(to_del);
-			BASHEER = to_del->parent;
-
+			right->parent = to_del->parent;
+			
+			balancing_node = to_del->right;
+			rebalance(balancing_node);
 			delete to_del;
-			rebalance(BASHEER);
+			
 			--n;
 			iterator it;
 			it.ptr = succ;
@@ -484,9 +522,10 @@ public:
 
 		}// end of case when node has only 1 child and its only right child 
 		//case 3: to_del has 2 childs
-		// we need successor private function
+		
 		else
 		{
+
 			succ = successor(to_del);
 
 			// succ is immediate right child
@@ -503,7 +542,6 @@ public:
 					to_del->parent->left = succ;
 				}
 			}
-			///////////////////////////////////////
 			//case 1: succ is in left subtree of to_del->right
 			else
 			{
@@ -532,16 +570,18 @@ public:
 
 			//if succ id intermediate node then 
 			if (to_del->right == succ) {
-				BASHEER = succ;
+				balancing_node = succ;
 			}
 			else {
-				BASHEER = succ->parent;
+				balancing_node = succ->parent;
 			}
+			if (to_del->parent == H) {H->parent = succ;}
 			delete to_del;
 
-			rebalance(BASHEER);
+			rebalance(balancing_node);
 
 			--n;
+		
 			return iterator(succ);
 			// todo: deleting root node case }
 		}//end of else 	
