@@ -1,1 +1,1 @@
-<img src = "https://github.com/ehhsen/DataStructureF25/blob/main/Implementation.png" width="40%" />
+<img src = "https://github.com/ehhsen/DataStructureF25/blob/main/Implementation.png" width="50% "/>
