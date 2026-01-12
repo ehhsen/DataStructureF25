@@ -75,9 +75,6 @@ private:
 		return nn;
 	}//END OF COPY
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 	void update_height(mnode<key_type, T>* ptr) {
 		// leaf node sa root node tak sab nodes ki height update kare ga
 		ptr->height = 1 + std::max(ptr->left->height, ptr->right->height);
@@ -211,7 +208,7 @@ public:
 		return this->n;
 	}
 	bool empty()const {
-		return H->left == H->parent == H->right;
+		return n==0;
 	}
 	~map() {
 		clear();
@@ -254,15 +251,13 @@ public:
 		return *this;
 	}// end of operator == 
 
-	//clear function//////////
 	void clear() {
 		// only dummy node remains all other are deleted 
 		clear_r(H->parent);
 		H->left = H->parent = H->right = H;
 		n = 0;
 	}
-	/////////////////////////////////////////////////////
-
+	
 	//iterator class 
 	class iterator {
 	private:
@@ -278,7 +273,10 @@ public:
 		std::pair<key_type, T>& operator*() const {
 			return ptr->data;
 		}
-		// todo:implement iterator != 
+		std::pair<key_type, T>* operator->() {
+   			 return &ptr->data;
+		}
+		
 		bool operator!=(const iterator& other) const {
 			return this->ptr != other.ptr;
 		}
@@ -317,7 +315,7 @@ public:
 
 	};// end of iterator class
 
-	T& at(const key_type& key) {
+	T& at(const key_type& key)const {
 		iterator it = find(key);
 		if (it == end()) {
 			//value not found
@@ -331,16 +329,11 @@ public:
 	}// end of at{} function
 
 	T& operator[](const key_type& key) {
-		iterator it;
-		it = find(key);
-		if (it == end()) {
-			// value not found : insert it
-			std::pair<iterator, bool> result;
-			result = insert({ key, T() });
-			iterator it = result.first;
-
+	iterator it = find(key);
+	if (it == end()) {
+   		it = insert({key, T()}).first;
 		}
-		return it.ptr->data.second;
+	return it.ptr->data.second;
 	}
 
 	//end function
@@ -369,7 +362,7 @@ public:
 		}
 		else return 1;
 	}
-	/////////////////////////////////////////////////
+	
 	bool contains(const key_type& key) {
 		// ya btata ha ka key jese koi key mojuud ha map me ya nahe ?
 		iterator it = find(key);
@@ -381,11 +374,12 @@ public:
 		else return true;
 	}
 
-	///////////////////////////////////////////////
 	//find function
 	iterator find(const key_type value) {
 		mnode<key_type, T>* temp = H->parent; 
-
+		if(H->parent == H){
+			return end();
+		}
 		if (temp->data.first == value) {
 			iterator it(temp);
 			return it;
@@ -409,8 +403,6 @@ public:
 		return end();
 	}//end of find 
 
-	////////////////////////////////////////////////////
-	//insert function          // iterator to inserted element // bool = true if element inserted successfully
 	std::pair<iterator, bool> insert(const std::pair<key_type, T>& p) {
 		iterator it = find(p.first);
 		//todo: check if value exixts by creating find function 
@@ -678,3 +670,4 @@ public:
 		}//end of else 	
 	}//end of erase 
 };
+
